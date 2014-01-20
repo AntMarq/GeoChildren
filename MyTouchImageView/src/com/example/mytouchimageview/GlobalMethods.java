@@ -16,7 +16,7 @@ public class GlobalMethods extends Application
 	private BaseDeDonnees	myBaseDeDonnee;
 	
 	
-	@Override
+	/*@Override
 	public void onCreate ()
 	{
 		
@@ -30,7 +30,7 @@ public class GlobalMethods extends Application
 		{
 			throw new Error ("Unable to create database");
 		}	
-	}
+	}*/
 
 	public BaseDeDonnees getMyBaseDeDonnee ()
 	{
