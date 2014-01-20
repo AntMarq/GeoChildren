@@ -120,8 +120,10 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 	public void openDataBase () throws SQLException
 	{
 		// Open the database
+		
 		String myPath = DB_PATH + DB_NAME;
 		myDataBase = SQLiteDatabase.openDatabase (myPath, null, SQLiteDatabase.OPEN_READWRITE);
+		Log.v(tag, "openDataBase" + myDataBase);
 	}
 
 	@Override
@@ -136,23 +138,28 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 
 	/* MAP_ORIGINE */
 
-	public void insertMapOrigine (Map map_origine) {
+	public void insertMapOrigine (Map map_origine) 
+	{
 		ContentValues cvMapOrigine = new ContentValues ();
 		cvMapOrigine.put ("id", map_origine.getId ());
 		cvMapOrigine.put ("id_type", map_origine.getId_type());
 		cvMapOrigine.put ("title", map_origine.getTitle());
 		
 		//convert Bitmap to blob
-		if(map_origine.getPicture()!=null) {
+		if(map_origine.getPicture()!=null) 
+		{
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			map_origine.getPicture().compress(Bitmap.CompressFormat.PNG, 100, bos);
 			byte[] bArray = bos.toByteArray();
 			cvMapOrigine.put ("picture",bArray);
-		} else {
+		} 
+		else 
+		{
 			cvMapOrigine.put ("picture","");
 		}
 	
-		if ( ! myDataBase.isOpen ()) {
+		if ( ! myDataBase.isOpen ())
+		{
 			Log.v (tag, "Ouverture BDDGeoChildren");
 			openDataBase ();
 		}
@@ -202,7 +209,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 	{
 		Log.v (tag, "insertMapSave" + myDataBase);
 		ContentValues cvMapSave = new ContentValues ();
-		cvMapSave.put ("id", map_save.getId ());
+	//	cvMapSave.put ("id", map_save.getId ());
 		cvMapSave.put ("id_type", map_save.getId_type());
 		cvMapSave.put ("id_map", map_save.getId_map());
 		cvMapSave.put ("title", map_save.getTitle());
@@ -220,14 +227,14 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 			cvMapSave.put ("picture","");
 		}
 	
-		if (!myDataBase.isOpen ()) {
+		if ( ! myDataBase.isOpen ()) {
 			
 			openDataBase ();
 		}
 		
 		if(checkMapSave(map_save.getId ())) {
 			try {
-				myDataBase.insert ("MAP_ORIGINE", null, cvMapSave);
+				myDataBase.insert ("MAP_SAVE", null, cvMapSave);
 			} catch (SQLiteException e) {
 				throw new Error ("RecentDbManager Exception in inserting data" + e.getMessage ());
 			}

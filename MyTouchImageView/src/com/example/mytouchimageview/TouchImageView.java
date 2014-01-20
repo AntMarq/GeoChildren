@@ -300,19 +300,29 @@ GlobalMethods application;
 	public void saveScreen ()
 	{
 		ViewGroup parent = (ViewGroup) getParent();
+		application = (GlobalMethods) context.getApplicationContext();
 		parent.setDrawingCacheEnabled(true);
 		parent.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 		Bitmap bm = parent.getDrawingCache(true);
-		application = (GlobalMethods) context.getApplicationContext();
-		Log.v(tag, "test" + application + "//" + application.getMyBaseDeDonnee ().toString());
+		Log.v(tag, "application = " + application + "//" + application.getMyBaseDeDonnee ());
+		application.getMyBaseDeDonnee ().openDataBase();
 		
-		Map mp = new Map();
-		mp.setTitle("ma carte de test");
-		mp.setId_map(1);
-		mp.setId_type(2);
-		mp.setPicture(bm);
 		
-		//application.getMyBaseDeDonnee ().insertMapSave (mp);
+		if(bm != null)
+		{
+			Map mp = new Map();
+			mp.setTitle("ma carte de test");
+			mp.setId_map(1);
+			mp.setId_type(2);
+			mp.setPicture(bm);
+			application.getMyBaseDeDonnee().insertMapSave(mp);
+			
+			
+		}
+		
+		application.getMyBaseDeDonnee().close();
+	
+//Save to Download Folder		
 		/*try {
 			File tmpFile = File.createTempFile("Screencapture", ".png",
 			         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
@@ -353,29 +363,6 @@ GlobalMethods application;
 	}
 	
 	 
-	
-	public void saveMap()
-	{
-		
-/*
-		 try {
-			 
-			 Bitmap bm = Bitmap.
-			File tmpFile = File.createTempFile("photoview", ".png",
-			         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
-			FileOutputStream out = new FileOutputStream(tmpFile);
-			bm.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.close();
-            Intent share = new Intent(Intent.ACTION_SEND);
-            share.setType("image/png");
-            share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tmpFile));
-          //  startActivity(share);
-			Log.v("TouchImageView", "savemap" + tmpFile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-	}
 
 	public ZoomablePinView getPin() {
 		if (selectedPin == -1)

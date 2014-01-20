@@ -111,16 +111,7 @@ public class MapFragment extends Fragment
 	    	mImageView.setImageResource(R.drawable.suisse_map);
 	    }
 		
-		Bitmap bm = BitmapFactory.decodeResource(this.getResources(), R.drawable.allemagne_map);
-		if(bm != null)
-		{
-			Map mp = new Map();
-			mp.setTitle("ma carte de test");
-			mp.setId_map(1);
-			mp.setId_type(2);
-			mp.setPicture(bm);
-			application.getMyBaseDeDonnee ().insertMapSave (mp);
-		}
+		
 		
 		
 		
