@@ -15,7 +15,7 @@ public class ZoomablePinView extends ImageView{
 
 	public ZoomablePinView(Context context) {
 		super(context);
-		setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.mini_map_marker));
+		setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.map_marker));
 	}
 
 	@Override
