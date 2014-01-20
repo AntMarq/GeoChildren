@@ -1,0 +1,9 @@
+
+    <resources>
+        <color name="dark_blue">#0040FF</color>
+        <color name="blue">#2E9AFE</color>
+        <color name="grisclair">#2E2E2E</color>
+        <color name="vertfluo">#00FF00</color>
+        <color name="blanc">#FFFFFF</color>
+        <color name="noir">#000000</color>
+    </resources>
