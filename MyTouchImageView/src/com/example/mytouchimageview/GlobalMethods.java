@@ -10,13 +10,10 @@ import android.view.WindowManager;
 public class GlobalMethods extends Application
 {
 	private MapFragment mapFragment ;
-	
-	
-	
 	private BaseDeDonnees	myBaseDeDonnee;
 	
 	
-	/*@Override
+	@Override
 	public void onCreate ()
 	{
 		
@@ -30,7 +27,7 @@ public class GlobalMethods extends Application
 		{
 			throw new Error ("Unable to create database");
 		}	
-	}*/
+	}
 
 	public BaseDeDonnees getMyBaseDeDonnee ()
 	{
@@ -41,13 +38,6 @@ public class GlobalMethods extends Application
 	{
 		this.myBaseDeDonnee = myBaseDeDonnee;
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	public int[] dimScreen()

@@ -1,10 +1,19 @@
 package com.example.mytouchimageview;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -19,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity 
 {
@@ -37,6 +47,7 @@ public class MainActivity extends FragmentActivity
     private ExpandableListGeoAdapter mExpandableListGeoAdapter;
     final static String ARG_POSITION = "position";
     List<String> loadCartes;
+    FragmentManager manager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -148,11 +159,48 @@ public class MainActivity extends FragmentActivity
 				if(mExpandableListGeoAdapter.getChildrenCount(groupPosition) > 0)
 				{
 					
-					Log.v(tag, "onGroupClick" + parent.getChildCount());
+					Log.v(tag, "onGroupClickChildisPresent" + parent.getChildCount());
 				}
 				else
 				{
-					selectItem(groupPosition);
+					manager = getSupportFragmentManager();
+					MapFragment frag = (MapFragment) manager.findFragmentByTag(tagMap);
+					
+					if(frag != null)
+					{
+						if(groupPosition == 3)
+						{
+							Log.v(tag, "groupPosition = 3");
+							
+							frag.mImageView.removeAllPin();
+						
+							Log.v(tag, "onGroupClickNoChild" + frag.toString());
+						}
+
+						if(groupPosition == 4)
+						{
+							
+						//	Drawable bm = frag.mImageView.getDrawable();
+							frag.mImageView.saveScreen();
+						//	Log.v(tag, "getBitmap" + bitmap);
+							/*
+							try {
+								File tmpFile = File.createTempFile("photoview", ".png",
+								         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+								FileOutputStream out = new FileOutputStream(tmpFile);
+								bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+					            out.close();
+					            Intent share = new Intent(Intent.ACTION_SEND);
+					            share.setType("image/png");
+					            share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tmpFile));
+					            startActivity(share);
+					        //    Toast.makeText(this, String.format("Extracted into: %s", tmpFile.getAbsolutePath()), Toast.LENGTH_SHORT).show();
+			                } catch (Throwable t) {
+			                    t.printStackTrace();
+			               //     Toast.makeText(this, "Error occured while extracting bitmap", Toast.LENGTH_SHORT).show();
+			                }*/
+						}
+					}
 				}
 				
 				return false;
@@ -161,16 +209,21 @@ public class MainActivity extends FragmentActivity
 			@Override
 			public boolean onChildClick(ExpandableListView parent, View v,int groupPosition, int childPosition, long id) 
 			{
-				Log.v(tag, "childPosition = " + childPosition);
+				Log.v(tag, "childPosition = " + childPosition + "groupPosition " + groupPosition);
 				
-						FragmentManager manager = getSupportFragmentManager();
+						manager = getSupportFragmentManager();
 						FragmentTransaction ft = manager.beginTransaction();
 						
 						Bundle args = new Bundle();												
 						fragment = new MapFragment();
 						args.putInt("position", childPosition);
-						fragment.setArguments(args);						
+						
+						
+						fragment.setArguments(args);
+					
 						ft.replace(R.id.content_frame, fragment, tagMap).commit();
+						
+						Log.v(tag, "onGroupClickNoChild" + fragment.toString());
 						
 						mDrawerList.setItemChecked(childPosition, true);
 						String dataString = loadCartes.get(childPosition).toString();

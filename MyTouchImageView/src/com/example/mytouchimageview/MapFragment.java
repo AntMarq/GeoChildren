@@ -1,9 +1,13 @@
 package com.example.mytouchimageview;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,8 +19,9 @@ public class MapFragment extends Fragment
 {
 
 	private GlobalMethods application ;
+	private String tag = "MapFragment";
 	TouchImageView mImageView;
-    int myChildPosition ;
+    int myChildPosition,clearAllPin ;
     private Button buttonShowPin, buttonRemovePin ; 
 
 
@@ -56,12 +61,20 @@ public class MapFragment extends Fragment
 		});
 		
         Bundle bundle=getArguments(); 
-		myChildPosition =bundle.getInt("position");  
+      
+       
+		myChildPosition =bundle.getInt("position"); 
+		
 
+		
 		if(myChildPosition == 0)
 	    {
+			
 			mImageView.setImageResource(R.drawable.allemagne_map);
-		       
+			
+			
+			
+			
 	    }
 	    else if(myChildPosition == 1)
 	    {
@@ -98,7 +111,25 @@ public class MapFragment extends Fragment
 	    	mImageView.setImageResource(R.drawable.suisse_map);
 	    }
 		
+		Bitmap bm = BitmapFactory.decodeResource(this.getResources(), R.drawable.allemagne_map);
+		if(bm != null)
+		{
+			Map mp = new Map();
+			mp.setTitle("ma carte de test");
+			mp.setId_map(1);
+			mp.setId_type(2);
+			mp.setPicture(bm);
+			application.getMyBaseDeDonnee ().insertMapSave (mp);
+		}
+		
+		
+		
         return view;
 	
+	}
+	
+	private void removeAllpins()
+	{
+		
 	}
 }

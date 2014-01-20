@@ -1,31 +1,33 @@
 package com.example.mytouchimageview;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 public class BaseDeDonnees extends SQLiteOpenHelper
 {
 	
 	private static final String	tag	= "BDD";
-	private static String		DB_PATH	= "/data/data/com.exemple.mytouchimageview/databases/";
+	private static String		DB_PATH	= "/data/data/com.example.mytouchimageview/databases/";
 	private static String		DB_NAME	= "BDDGeoChildren";
 	private String src;
 	private SQLiteDatabase		myDataBase;
 	private final Context		myContext;
-	private int typeActu = 0;
-	private int typeShop = 1;
-	private int typeRep = 2;
-	private int typeAlbum= 3;
-	private GlobalMethods application;
+	
+	
 	
 	
 	public BaseDeDonnees (Context context)
@@ -64,8 +66,9 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 
 			try
 			{
+				
+				copyDataBase ();	
 				Log.v (tag, "BDD copié");
-				copyDataBase ();			
 			}
 			catch (IOException e)
 			{
@@ -130,4 +133,183 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 			super.close ();
 		}
 	}
+
+	/* MAP_ORIGINE */
+
+	public void insertMapOrigine (Map map_origine) {
+		ContentValues cvMapOrigine = new ContentValues ();
+		cvMapOrigine.put ("id", map_origine.getId ());
+		cvMapOrigine.put ("id_type", map_origine.getId_type());
+		cvMapOrigine.put ("title", map_origine.getTitle());
+		
+		//convert Bitmap to blob
+		if(map_origine.getPicture()!=null) {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			map_origine.getPicture().compress(Bitmap.CompressFormat.PNG, 100, bos);
+			byte[] bArray = bos.toByteArray();
+			cvMapOrigine.put ("picture",bArray);
+		} else {
+			cvMapOrigine.put ("picture","");
+		}
+	
+		if ( ! myDataBase.isOpen ()) {
+			Log.v (tag, "Ouverture BDDGeoChildren");
+			openDataBase ();
+		}
+		
+		if(checkMapOrigine(map_origine.getId ())) {
+			try {
+				myDataBase.insert ("MAP_ORIGINE", null, cvMapOrigine);
+			} catch (SQLiteException e) {
+				throw new Error ("RecentDbManager Exception in inserting data" + e.getMessage ());
+			}
+		}
+		myDataBase.close ();
+	}
+
+	public void deleteMapOrigine (long id ) {
+		if ( ! myDataBase.isOpen ()) {
+			openDataBase ();
+		}
+			try {
+				myDataBase.delete ("MAP_ORIGINE", "_id="+id, null) ;
+			} catch (SQLiteException e) {
+				throw new Error ("RecentDbManager Exception in deleting data" + e.getMessage ());
+			}
+		
+		myDataBase.close ();
+	}
+
+	private boolean checkMapOrigine(int id) {
+		Cursor retour = myDataBase.query ("MAP_ORIGINE", null, "_id="+id, null, null, null, null);
+		if(retour.getCount ()!=0) {
+			retour.close();
+			return false;
+		}
+		retour.close();
+		return true;
+	}
+
+	public Cursor getMapOrigine () {
+		String[] columns = new String [] {"_id", "id_type", "title", "picture"};
+		Cursor cursorMapOrigine = myDataBase.query ("MAP_ORIGINE", columns, null, null, null, null, null, null);
+		return cursorMapOrigine;
+	}
+	
+	/* MAP_SAVE */
+
+	public void insertMapSave (Map map_save) 
+	{
+		Log.v (tag, "insertMapSave" + myDataBase);
+		ContentValues cvMapSave = new ContentValues ();
+		cvMapSave.put ("id", map_save.getId ());
+		cvMapSave.put ("id_type", map_save.getId_type());
+		cvMapSave.put ("id_map", map_save.getId_map());
+		cvMapSave.put ("title", map_save.getTitle());
+	
+		//convert Bitmap to blob
+		if(map_save.getPicture()!=null) 
+		{
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			map_save.getPicture().compress(Bitmap.CompressFormat.PNG, 100, bos);
+			byte[] bArray = bos.toByteArray();
+			cvMapSave.put ("picture",bArray);
+		} 
+		else 
+		{
+			cvMapSave.put ("picture","");
+		}
+	
+		if (!myDataBase.isOpen ()) {
+			
+			openDataBase ();
+		}
+		
+		if(checkMapSave(map_save.getId ())) {
+			try {
+				myDataBase.insert ("MAP_ORIGINE", null, cvMapSave);
+			} catch (SQLiteException e) {
+				throw new Error ("RecentDbManager Exception in inserting data" + e.getMessage ());
+			}
+		}
+		myDataBase.close ();
+	}
+
+	public void updateMapSave(Map map_save) {
+		ContentValues cvMapSave = new ContentValues ();
+		cvMapSave.put ("id", map_save.getId ());
+		cvMapSave.put ("id_type", map_save.getId_type());
+		cvMapSave.put ("id_map", map_save.getId_map());
+		cvMapSave.put ("title", map_save.getTitle());
+		
+		//convert Bitmap to blob
+		if(map_save.getPicture()!=null) {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			map_save.getPicture().compress(Bitmap.CompressFormat.PNG, 100, bos);
+			byte[] bArray = bos.toByteArray();
+			cvMapSave.put ("picture",bArray);
+		} else {
+			cvMapSave.put ("picture","");
+		}
+		
+		if( ! myDataBase.isOpen()) {
+			openDataBase();
+		}
+		try {
+			myDataBase.update("MAP_SAVE", cvMapSave, "_id="+map_save.getId(), null);
+		} catch (SQLiteException e) {
+			throw new Error ("RecentDbManager Exception in updating data" + e.getMessage ());
+		}
+		
+		myDataBase.close ();
+	}
+	
+	public void deleteMapSave(long id ) {
+		if ( ! myDataBase.isOpen()) {
+			openDataBase ();
+		}
+			try {
+				myDataBase.delete ("MAP_SAVE", "_id="+id, null) ;
+			} catch (SQLiteException e) {
+				throw new Error ("RecentDbManager Exception in deleting data" + e.getMessage ());
+			}
+		
+		myDataBase.close ();
+	}
+
+	private boolean checkMapSave(int id) {
+		Cursor retour = myDataBase.query ("MAP_SAVE", null, "_id="+id, null, null, null, null);
+		if(retour.getCount ()!=0) {
+			retour.close();
+			return false;
+		}
+		retour.close();
+		return true;
+	}
+
+	public Cursor getMapSave() {
+		String[] columns = new String [] {"_id", "id_type", "id_map", "title", "picture"};
+		Cursor cursorMapSave = myDataBase.query ("MAP_SAVE", columns, null, null, null, null, null, null);
+		return cursorMapSave;
+	}
+	
+	/* TYPE_MAP */
+
+	private boolean checkMapType(int id) {
+		Cursor retour = myDataBase.query ("TYPE_MAP", null, "_id="+id, null, null, null, null);
+		if(retour.getCount ()!=0) {
+			retour.close();
+			return false;
+		}
+		retour.close();
+		return true;
+	}
+
+	public Cursor getMapType() {
+		String[] columns = new String [] {"_id", "name"};
+		Cursor cursorMapOrigine = myDataBase.query ("TYPE_MAP", columns, null, null, null, null, null, null);
+		return cursorMapOrigine;
+	}
 }
+
+

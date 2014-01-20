@@ -1,12 +1,21 @@
 package com.example.mytouchimageview;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -18,6 +27,7 @@ import android.widget.Toast;
 
 public class TouchImageView extends ImageView {
 
+	String tag = "TouchImageView" ;
 	Matrix matrix;
 
 	// We can be in one of these 3 states
@@ -41,7 +51,7 @@ public class TouchImageView extends ImageView {
 	protected float origWidth, origHeight;
 	int oldMeasuredWidth, oldMeasuredHeight;
 
-
+GlobalMethods application;
 	ScaleGestureDetector mScaleDetector;
 
 	Context context;
@@ -283,16 +293,88 @@ public class TouchImageView extends ImageView {
 		pins.add(pin);
 		ViewGroup parent = (ViewGroup) getParent();
 		parent.addView(pin);
+		parent.setDrawingCacheEnabled(true);
 		selectedPin = pins.size() - 1;
 	}
 
-	public void removePin(){
+	public void saveScreen ()
+	{
+		ViewGroup parent = (ViewGroup) getParent();
+		parent.setDrawingCacheEnabled(true);
+		parent.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+		Bitmap bm = parent.getDrawingCache(true);
+		application = (GlobalMethods) context.getApplicationContext();
+		Log.v(tag, "test" + application + "//" + application.getMyBaseDeDonnee ().toString());
+		
+		Map mp = new Map();
+		mp.setTitle("ma carte de test");
+		mp.setId_map(1);
+		mp.setId_type(2);
+		mp.setPicture(bm);
+		
+		//application.getMyBaseDeDonnee ().insertMapSave (mp);
+		/*try {
+			File tmpFile = File.createTempFile("Screencapture", ".png",
+			         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+			FileOutputStream out = new FileOutputStream(tmpFile);
+			bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.close();
+            Toast.makeText(context, String.format("Extracted into: %s", tmpFile.getAbsolutePath()), Toast.LENGTH_SHORT).show();
+       
+        } catch (Throwable t) 
+        {
+            t.printStackTrace();
+            Toast.makeText(context, "Error occured while extracting bitmap", Toast.LENGTH_SHORT).show();
+        }*/
+		
+		
+		
+	}
+	
+	
+	public void removePin()
+	{
 		if (selectedPin > -1){
 			ViewGroup parent = (ViewGroup) getParent();
 			parent.removeView(pins.get(selectedPin));
 			pins.remove(selectedPin);
 			selectedPin = -1;
 		}
+	}
+	
+	public void removeAllPin()
+	{
+		 for(selectedPin = 0 ; selectedPin < pins.size() ; selectedPin++){
+			   ViewGroup parent = (ViewGroup) getParent();
+			   parent.removeView(pins.get(selectedPin));
+			   pins.remove(selectedPin);
+			   selectedPin = -1;
+			  }
+	}
+	
+	 
+	
+	public void saveMap()
+	{
+		
+/*
+		 try {
+			 
+			 Bitmap bm = Bitmap.
+			File tmpFile = File.createTempFile("photoview", ".png",
+			         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+			FileOutputStream out = new FileOutputStream(tmpFile);
+			bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.close();
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("image/png");
+            share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tmpFile));
+          //  startActivity(share);
+			Log.v("TouchImageView", "savemap" + tmpFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 	}
 
 	public ZoomablePinView getPin() {
