@@ -69,12 +69,8 @@ public class MapFragment extends Fragment
 		
 		if(myChildPosition == 0)
 	    {
-			
 			mImageView.setImageResource(R.drawable.allemagne_map);
-			
-			
-			
-			
+
 	    }
 	    else if(myChildPosition == 1)
 	    {
@@ -110,11 +106,7 @@ public class MapFragment extends Fragment
 	    {
 	    	mImageView.setImageResource(R.drawable.suisse_map);
 	    }
-		
-		
-		
-		
-		
+
         return view;
 	
 	}

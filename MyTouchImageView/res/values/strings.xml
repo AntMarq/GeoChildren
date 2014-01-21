@@ -25,5 +25,13 @@
         <item>Outils</item>
         <item>Avancé</item>
      </string-array>
+     
+     <string-array name="myArray"> 
+    <item>Paris</item> 
+    <item>Lille</item> 
+    <item>Marseille</item> 
+    <item>Bordeaux</item> 
+    <item>Strasbourg</item>
+</string-array> 
 
 </resources>

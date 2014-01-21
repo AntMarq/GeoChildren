@@ -157,7 +157,10 @@ public class MainActivity extends FragmentActivity
 			@Override
 			public boolean onGroupClick(ExpandableListView parent, View v,int groupPosition, long id) 
 			{ 
+				Log.v(tag, "OnGroupClick");
 				
+				manager = getSupportFragmentManager();
+				frag = (MapFragment) manager.findFragmentByTag(tagMap);
 				
 				if(mExpandableListGeoAdapter.getChildrenCount(groupPosition) > 0)
 				{
@@ -166,9 +169,6 @@ public class MainActivity extends FragmentActivity
 				}
 				else
 				{
-					manager = getSupportFragmentManager();
-					frag = (MapFragment) manager.findFragmentByTag(tagMap);
-					
 					if(frag != null)
 					{
 						if(groupPosition == 3)
@@ -205,15 +205,15 @@ public class MainActivity extends FragmentActivity
 			{
 				Log.v(tag, "childPosition = " + childPosition + "groupPosition " + groupPosition);
 				
+						
+						manager = getSupportFragmentManager();
+						FragmentTransaction ft = manager.beginTransaction();
+						fragment = new MapFragment();
 					
-					manager = getSupportFragmentManager();
-					FragmentTransaction ft = manager.beginTransaction();
-					fragment = new MapFragment();
 						Bundle args = new Bundle();												
 						
 						args.putInt("position", childPosition);
-						
-						
+
 						fragment.setArguments(args);
 					
 						ft.replace(R.id.content_frame, fragment, tagMap).commit();
@@ -244,6 +244,7 @@ public class MainActivity extends FragmentActivity
 	                    bitmap = BitmapFactory.decodeStream(stream);
 	                    stream.close();
 	                    Log.v(tag, "frag = " + frag);
+	                  
 	                    frag.mImageView.setImageBitmap(bitmap);
 	                } catch (FileNotFoundException e) {
 	                    e.printStackTrace();
