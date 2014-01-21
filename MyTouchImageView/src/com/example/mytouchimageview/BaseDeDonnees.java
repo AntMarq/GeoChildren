@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.Toast;
 
 public class BaseDeDonnees extends SQLiteOpenHelper
 {
@@ -209,7 +210,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 	{
 		Log.v (tag, "insertMapSave" + myDataBase);
 		ContentValues cvMapSave = new ContentValues ();
-	//	cvMapSave.put ("id", map_save.getId ());
+		cvMapSave.put ("_id", map_save.getId());
 		cvMapSave.put ("id_type", map_save.getId_type());
 		cvMapSave.put ("id_map", map_save.getId_map());
 		cvMapSave.put ("title", map_save.getTitle());
@@ -235,6 +236,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 		if(checkMapSave(map_save.getId ())) {
 			try {
 				myDataBase.insert ("MAP_SAVE", null, cvMapSave);
+				Toast.makeText(myContext, "Carte sauvegardée", Toast.LENGTH_SHORT).show();;
 			} catch (SQLiteException e) {
 				throw new Error ("RecentDbManager Exception in inserting data" + e.getMessage ());
 			}

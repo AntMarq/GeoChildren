@@ -1,7 +1,8 @@
 package com.example.mytouchimageview;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,11 +10,7 @@ import java.util.List;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -28,11 +25,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity 
 {
-
+	private static final int SELECT_PICTURE = 1;
 	private static final String tag = "MainActivity";
 	private DrawerLayout mDrawerLayout;
 	private ExpandableListView mDrawerList;
@@ -48,13 +44,18 @@ public class MainActivity extends FragmentActivity
     final static String ARG_POSITION = "position";
     List<String> loadCartes;
     FragmentManager manager;
-	
+    MapFragment frag;
+    private Bitmap bitmap;
+    FragmentTransaction ft;
+    
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		prepareListData();
+
 		
 		mTitle = mDrawerTitle = getTitle();
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -156,6 +157,8 @@ public class MainActivity extends FragmentActivity
 			@Override
 			public boolean onGroupClick(ExpandableListView parent, View v,int groupPosition, long id) 
 			{ 
+				
+				
 				if(mExpandableListGeoAdapter.getChildrenCount(groupPosition) > 0)
 				{
 					
@@ -164,7 +167,7 @@ public class MainActivity extends FragmentActivity
 				else
 				{
 					manager = getSupportFragmentManager();
-					MapFragment frag = (MapFragment) manager.findFragmentByTag(tagMap);
+					frag = (MapFragment) manager.findFragmentByTag(tagMap);
 					
 					if(frag != null)
 					{
@@ -179,28 +182,19 @@ public class MainActivity extends FragmentActivity
 
 						if(groupPosition == 4)
 						{
-							
-						//	Drawable bm = frag.mImageView.getDrawable();
-							frag.mImageView.saveScreen();
-						//	Log.v(tag, "getBitmap" + bitmap);
-							/*
-							try {
-								File tmpFile = File.createTempFile("photoview", ".png",
-								         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
-								FileOutputStream out = new FileOutputStream(tmpFile);
-								bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-					            out.close();
-					            Intent share = new Intent(Intent.ACTION_SEND);
-					            share.setType("image/png");
-					            share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tmpFile));
-					            startActivity(share);
-					        //    Toast.makeText(this, String.format("Extracted into: %s", tmpFile.getAbsolutePath()), Toast.LENGTH_SHORT).show();
-			                } catch (Throwable t) {
-			                    t.printStackTrace();
-			               //     Toast.makeText(this, "Error occured while extracting bitmap", Toast.LENGTH_SHORT).show();
-			                }*/
+							frag.mImageView.saveScreen();						
 						}
 					}
+					
+						if(groupPosition == 5)
+						{
+							Intent intent = new Intent();
+	                        intent.setType("image/*");
+	                        intent.setAction(Intent.ACTION_GET_CONTENT);
+	                        startActivityForResult(Intent.createChooser(intent,"Select Picture"), SELECT_PICTURE);
+							
+						}
+					
 				}
 				
 				return false;
@@ -211,11 +205,12 @@ public class MainActivity extends FragmentActivity
 			{
 				Log.v(tag, "childPosition = " + childPosition + "groupPosition " + groupPosition);
 				
-						manager = getSupportFragmentManager();
-						FragmentTransaction ft = manager.beginTransaction();
-						
+					
+					manager = getSupportFragmentManager();
+					FragmentTransaction ft = manager.beginTransaction();
+					fragment = new MapFragment();
 						Bundle args = new Bundle();												
-						fragment = new MapFragment();
+						
 						args.putInt("position", childPosition);
 						
 						
@@ -235,6 +230,30 @@ public class MainActivity extends FragmentActivity
 			}
 		}
 		
+		public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	        if (resultCode == RESULT_OK) {
+	            if (requestCode == SELECT_PICTURE) 
+	            {
+	            	try {
+	                    // We need to recyle unused bitmaps
+	                    if (bitmap != null) {
+	                        bitmap.recycle();
+	                    }
+	                    InputStream stream = getContentResolver().openInputStream(
+	                            data.getData());
+	                    bitmap = BitmapFactory.decodeStream(stream);
+	                    stream.close();
+	                    Log.v(tag, "frag = " + frag);
+	                    frag.mImageView.setImageBitmap(bitmap);
+	                } catch (FileNotFoundException e) {
+	                    e.printStackTrace();
+	                } catch (IOException e) {
+	                    e.printStackTrace();
+	                }
+	            super.onActivityResult(requestCode, resultCode, data);
+	            }
+	        }
+	    }
 		
 		private void selectItem(int position)
 		{			

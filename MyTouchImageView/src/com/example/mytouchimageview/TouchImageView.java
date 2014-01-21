@@ -51,7 +51,7 @@ public class TouchImageView extends ImageView {
 	protected float origWidth, origHeight;
 	int oldMeasuredWidth, oldMeasuredHeight;
 
-GlobalMethods application;
+	GlobalMethods application;
 	ScaleGestureDetector mScaleDetector;
 
 	Context context;
