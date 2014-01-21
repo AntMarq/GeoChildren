@@ -312,7 +312,6 @@ public class TouchImageView extends ImageView {
 		{
 			Map mp = new Map();
 			mp.setTitle("ma carte de test");
-			mp.setId_map(1);
 			mp.setId_type(2);
 			mp.setPicture(bm);
 			application.getMyBaseDeDonnee().insertMapSave(mp);

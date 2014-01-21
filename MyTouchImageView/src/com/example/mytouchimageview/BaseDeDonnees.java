@@ -142,7 +142,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 	public void insertMapOrigine (Map map_origine) 
 	{
 		ContentValues cvMapOrigine = new ContentValues ();
-		cvMapOrigine.put ("id", map_origine.getId ());
+		cvMapOrigine.put ("_id", map_origine.getId ());
 		cvMapOrigine.put ("id_type", map_origine.getId_type());
 		cvMapOrigine.put ("title", map_origine.getTitle());
 		
@@ -246,7 +246,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 
 	public void updateMapSave(Map map_save) {
 		ContentValues cvMapSave = new ContentValues ();
-		cvMapSave.put ("id", map_save.getId ());
+		cvMapSave.put ("_id", map_save.getId ());
 		cvMapSave.put ("id_type", map_save.getId_type());
 		cvMapSave.put ("id_map", map_save.getId_map());
 		cvMapSave.put ("title", map_save.getTitle());
