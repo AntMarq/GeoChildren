@@ -65,9 +65,9 @@ public class MapFragment extends Fragment
        
 		myChildPosition =bundle.getInt("position"); 
 		
-
+		mImageView.setImageBitmap(application.getMapOrigineList().get(myChildPosition).getPicture());
 		
-		if(myChildPosition == 0)
+		/*if(myChildPosition == 0)
 	    {
 			mImageView.setImageResource(R.drawable.allemagne_map);
 
@@ -105,7 +105,7 @@ public class MapFragment extends Fragment
 	    else if(myChildPosition ==  7)
 	    {
 	    	mImageView.setImageResource(R.drawable.suisse_map);
-	    }
+	    }*/
 
         return view;
 	

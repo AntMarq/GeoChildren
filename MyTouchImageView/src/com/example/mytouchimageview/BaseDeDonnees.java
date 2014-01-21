@@ -319,6 +319,9 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 		Cursor cursorMapOrigine = myDataBase.query ("TYPE_MAP", columns, null, null, null, null, null, null);
 		return cursorMapOrigine;
 	}
+	
+
+	
 }
 
 

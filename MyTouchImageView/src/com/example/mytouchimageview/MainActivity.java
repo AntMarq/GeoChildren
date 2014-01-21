@@ -42,11 +42,12 @@ public class MainActivity extends FragmentActivity
     private String tagMap = "Map";
     private ExpandableListGeoAdapter mExpandableListGeoAdapter;
     final static String ARG_POSITION = "position";
-    List<String> loadCartes;
+    List<String> listMapTitle;
     FragmentManager manager;
     MapFragment frag;
     private Bitmap bitmap;
     FragmentTransaction ft;
+    GlobalMethods application;
     
     
 	@Override
@@ -221,7 +222,7 @@ public class MainActivity extends FragmentActivity
 						Log.v(tag, "onGroupClickNoChild" + fragment.toString());
 						
 						mDrawerList.setItemChecked(childPosition, true);
-						String dataString = loadCartes.get(childPosition).toString();
+						String dataString = listMapTitle.get(childPosition).toString();
 						setTitle(dataString);
 						Log.v(tag, "title =" + dataString );
 						mDrawerLayout.closeDrawer(mDrawerList);
@@ -275,26 +276,24 @@ public class MainActivity extends FragmentActivity
 	 
 	        // Adding child data
 	        listDataHeader.add("Cartes");
-	        listDataHeader.add("Reperes");
-	        listDataHeader.add("Annotations");
+	        listDataHeader.add("Mes Cartes");	     
 	        listDataHeader.add("Gomme");
 	        listDataHeader.add("Enregistrer");
 	        listDataHeader.add("Importer");	        
 	        listDataHeader.add("Supprimer");
 	 
 	        // Adding child data
-	        loadCartes = new ArrayList<String>();
-	        loadCartes.add("Allemagne");
-	        loadCartes.add("Angleterre");
-	        loadCartes.add("Espagne");
-	        loadCartes.add("France");
-	        loadCartes.add("Italie");   
-	        loadCartes.add("Portugal");
-	        loadCartes.add("Russie");
-	        loadCartes.add("Suisse");
-	 
-	 
-	        listDataChild.put(listDataHeader.get(0), loadCartes); // Header, Child data
+	        listMapTitle = new ArrayList<String>();
+	        
+	         application = (GlobalMethods) this.getApplicationContext();
+	         List<Map> listMapOrigine = application.getMapOrigineList();
+	         
+	         for (Map map : listMapOrigine) 
+	         {
+	        	 listMapTitle.add(map.getTitle());
+	         }
+	     
+	        listDataChild.put(listDataHeader.get(0), listMapTitle); // Header, Child data
 
 	    }
 		

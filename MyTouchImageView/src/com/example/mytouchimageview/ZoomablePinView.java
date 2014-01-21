@@ -28,7 +28,7 @@ public class ZoomablePinView extends ImageView{
 		super(context);
 		//setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.map_marker_32dp));
 		 String text = randomText(city);
-		 Bitmap bmp = drawTextToBitmap(context,R.drawable.map_marker_32dp,text);
+		 Bitmap bmp = drawTextToBitmap(context,R.drawable.bubble,text);
 		 setImageBitmap(bmp);
 	}
 
@@ -119,11 +119,12 @@ public class ZoomablePinView extends ImageView{
 
 	            // draw text to the Canvas center
 	            Rect bounds = new Rect();
+	            paint.measureText (mText);
 	            paint.getTextBounds(mText, 0 , mText.length(), bounds);
 	            int x = (bitmap.getWidth() - bounds.width())/6;
 	            int y = (bitmap.getHeight() + bounds.height())/5;
 
-	          canvas.drawText(mText, x * scale, y * scale, paint);
+	          canvas.drawText(mText, 0, y * scale, paint);
 	           
 	            return bitmap;
 	    } catch (Exception e) {

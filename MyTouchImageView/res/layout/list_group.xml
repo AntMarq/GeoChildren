@@ -3,7 +3,8 @@
     android:layout_width="fill_parent"
     android:layout_height="48dp"
     android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp" >
+    android:layout_marginRight="5dp" 
+   >
  
      <!-- icon -->
 
@@ -15,7 +16,7 @@
          android:layout_centerVertical="true"
          android:layout_marginLeft="8dp"
          android:layout_marginRight="8dp"
-         android:layout_marginTop="8dp" />
+         android:layout_marginTop="15dp"/>
  
     <!-- title -->
 

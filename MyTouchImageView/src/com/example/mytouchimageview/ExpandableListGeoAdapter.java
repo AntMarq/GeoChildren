@@ -110,13 +110,9 @@ public class ExpandableListGeoAdapter extends BaseExpandableListAdapter {
 		{
         	holder.image.setImageResource(R.drawable.world_map);
 		} 
-		else if (holder.lblListHeader.getText().equals("Reperes"))
+		else if (holder.lblListHeader.getText().equals("Mes Cartes"))
 		{
-			holder.image.setImageResource(R.drawable.map_marker);
-		} 
-		else if (holder.lblListHeader.getText().equals("Annotations"))
-		{
-			holder.image.setImageResource(R.drawable.pencil);
+			holder.image.setImageResource(R.drawable.folder_open);
 		} 
 		else if (holder.lblListHeader.getText().equals("Gomme"))
 		{
