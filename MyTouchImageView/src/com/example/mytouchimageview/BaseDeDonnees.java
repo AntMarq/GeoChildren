@@ -69,7 +69,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 			{
 				
 				copyDataBase ();	
-				Log.v (tag, "BDD copié");
+				Log.v (tag, "BDD copiï¿½");
 			}
 			catch (IOException e)
 			{
@@ -236,7 +236,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 		if(checkMapSave(map_save.getId ())) {
 			try {
 				myDataBase.insert ("MAP_SAVE", null, cvMapSave);
-				Toast.makeText(myContext, "Carte sauvegardée", Toast.LENGTH_SHORT).show();;
+				Toast.makeText(myContext, "Carte sauvegardï¿½e", Toast.LENGTH_SHORT).show();;
 			} catch (SQLiteException e) {
 				throw new Error ("RecentDbManager Exception in inserting data" + e.getMessage ());
 			}
@@ -320,7 +320,9 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 		return cursorMapOrigine;
 	}
 	
-
+	/* CITY */
+	
+	
 	
 }
 
