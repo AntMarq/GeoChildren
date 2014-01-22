@@ -145,4 +145,20 @@ public class GlobalMethods extends Application
 				city.setDisplayed(false);
 		}
 	}
+	
+	public boolean allCitiesDisplayed() {
+		int nbCity = this.cityMapList.size();
+		int nbCityDisplayed = 0;
+		
+		for (City city : this.cityMapList) {
+			if(city.isDisplayed()) {
+				nbCityDisplayed++;
+			}
+		}
+		
+		if(nbCityDisplayed == nbCity)
+			return true;
+		
+		return false;
+	}
 }

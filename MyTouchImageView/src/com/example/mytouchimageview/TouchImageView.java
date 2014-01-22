@@ -281,16 +281,23 @@ public class TouchImageView extends ImageView {
 	}
 
 	public void addPin(float posX, float posY, PointF centerPoint, PointF centerFocus, float saveScale) {
-		ZoomablePinView pin = new ZoomablePinView(context);
-		pin.setLayoutParams(new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT));
-		pin.setPosition(posX, posY, centerPoint, centerFocus, saveScale);
-		pins.add(pin);
-		ViewGroup parent = (ViewGroup) getParent();
-		parent.addView(pin);
-		parent.setDrawingCacheEnabled(true);
-		selectedPin = pins.size() - 1;
+		application = (GlobalMethods) context.getApplicationContext();
+		if(!application.allCitiesDisplayed()) {
+			ZoomablePinView pin = new ZoomablePinView(context);
+			pin.setLayoutParams(new ViewGroup.LayoutParams(
+					ViewGroup.LayoutParams.WRAP_CONTENT,
+					ViewGroup.LayoutParams.WRAP_CONTENT));
+			pin.setPosition(posX, posY, centerPoint, centerFocus, saveScale);
+			pins.add(pin);
+			ViewGroup parent = (ViewGroup) getParent();
+			parent.addView(pin);
+			parent.setDrawingCacheEnabled(true);
+			selectedPin = pins.size() - 1;
+		} else if(application.getCityMapList().size() == 0)
+			Toast.makeText(context, "Aucune ville à afficher pour ce pays", Toast.LENGTH_SHORT).show();
+		else
+			Toast.makeText(context, "Toutes les villes ont déjà été affichées", Toast.LENGTH_SHORT).show();
+	
 	}
 
 	public Bitmap saveScreen ()
