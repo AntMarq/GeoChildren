@@ -172,22 +172,22 @@ public class MainActivity extends FragmentActivity
 				{
 					if(frag != null)
 					{
-						if(groupPosition == 3)
+						if(groupPosition == 2)
 						{
-							Log.v(tag, "groupPosition = 3");
+							Log.v(tag, "groupPosition = 2");
 							
 							frag.mImageView.removeAllPin();
 						
 							Log.v(tag, "onGroupClickNoChild" + frag.toString());
 						}
 
-						if(groupPosition == 4)
+						if(groupPosition == 3)
 						{
 							frag.mImageView.saveScreen();						
 						}
 					}
 					
-						if(groupPosition == 5)
+						if(groupPosition == 4)
 						{
 							Intent intent = new Intent();
 	                        intent.setType("image/*");
@@ -286,7 +286,7 @@ public class MainActivity extends FragmentActivity
 	        listMapTitle = new ArrayList<String>();
 	        
 	         application = (GlobalMethods) this.getApplicationContext();
-	         List<Map> listMapOrigine = application.getMapOrigineList();
+	         List<Map> listMapOrigine = application.getMapOriginList();
 	         
 	         for (Map map : listMapOrigine) 
 	         {

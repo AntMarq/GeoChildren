@@ -29,7 +29,7 @@ public class Map {
 		this.id_type 	 = cursor.getInt(cursor.getColumnIndex("id_type"));
 		this.title 	 	 = cursor.getString(cursor.getColumnIndex("title"));
 
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(cursor.getBlob(cursor.getColumnIndex ("picture")));
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(cursor.getBlob(cursor.getColumnIndex("picture")));
 		this.picture = BitmapFactory.decodeStream(inputStream);
 	}
 

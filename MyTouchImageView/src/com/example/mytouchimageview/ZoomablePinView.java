@@ -1,5 +1,6 @@
 package com.example.mytouchimageview;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import android.content.Context;
@@ -11,25 +12,24 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 public class ZoomablePinView extends ImageView{
-
-	private float posX=0, posY=0;
-	private float posXInPixels=0, posYInPixels=0;
-	private float width=0, height=0;
-	private String[] myString;
+	private GlobalMethods 	    application;
+	private float 		  	    posX=0, posY=0;
+	private float 		    	posXInPixels=0, posYInPixels=0;
+	private float 		 	    width=0, height=0;
 	private static final Random rgenerator = new Random();
-	private String city = null;
-
+	
 	public ZoomablePinView(Context context) 
 	{
 		super(context);
 		//setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.map_marker_32dp));
-		 String text = randomText(city);
-		 Bitmap bmp = drawTextToBitmap(context,R.drawable.bubble,text);
-		 setImageBitmap(bmp);
+		String text = randomText(context);
+	 	Bitmap bmp = drawTextToBitmap(context,R.drawable.bubble,text);
+	 	setImageBitmap(bmp);
 	}
 
 	@Override
@@ -129,21 +129,23 @@ public class ZoomablePinView extends ImageView{
 	            return bitmap;
 	    } catch (Exception e) {
 	        // TODO: handle exception
-
-
-
-	        return null;
+	    	return null;
 	    }
 
 	  }
 	
 	
-	public String randomText (String text)
+	public String randomText (Context context)
 	{
-		Resources res = getResources();
-		myString = res.getStringArray(R.array.myArray); 
-
-		String q = myString[rgenerator.nextInt(myString.length)];
+		application = (GlobalMethods) context.getApplicationContext();		
+		int rnb;
+		
+		do {
+			rnb = rgenerator.nextInt(application.getCityMapList().size());
+		} while(application.getCityMapList().get(rnb).isDisplayed());
+		
+		String q = application.getCityMapList().get(rnb).getName();
+		application.getCityMapList().get(rnb).setDisplayed(true);
 		
 		return q;
 	}

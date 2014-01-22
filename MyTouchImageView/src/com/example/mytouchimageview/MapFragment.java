@@ -65,54 +65,12 @@ public class MapFragment extends Fragment
        
 		myChildPosition =bundle.getInt("position"); 
 		
-		mImageView.setImageBitmap(application.getMapOrigineList().get(myChildPosition).getPicture());
+		application.setCurrentMap(application.getMapOriginList().get(myChildPosition));
+		application.setCityMapList();
 		
-		/*if(myChildPosition == 0)
-	    {
-			mImageView.setImageResource(R.drawable.allemagne_map);
-
-	    }
-	    else if(myChildPosition == 1)
-	    {
-	    	mImageView.setImageResource(R.drawable.angleterre_map);
-			
-	    }
-	    else if(myChildPosition ==  2)
-	    {
-	    	mImageView.setImageResource(R.drawable.espagne_map);
-			
-	    }
-	    else if (myChildPosition ==  3)
-	    {
-	    	
-	    	mImageView.setImageResource(R.drawable.france_map);
-	    }
-	    else if(myChildPosition ==  4)
-	    {   	
-	    	mImageView.setImageResource(R.drawable.italie_map);
-			
-	    }
-	    else if(myChildPosition ==  5)
-	    {
-	    	mImageView.setImageResource(R.drawable.portugal_map);
-			
-	    }
-	    else if(myChildPosition ==  6)
-	    {
-	    	mImageView.setImageResource(R.drawable.russie_map);
-			
-	    }
-	    else if(myChildPosition ==  7)
-	    {
-	    	mImageView.setImageResource(R.drawable.suisse_map);
-	    }*/
+		mImageView.setImageBitmap(application.getCurrentMap().getPicture());
 
         return view;
 	
-	}
-	
-	private void removeAllpins()
-	{
-		
 	}
 }

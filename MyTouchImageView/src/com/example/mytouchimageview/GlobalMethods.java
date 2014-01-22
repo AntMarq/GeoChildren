@@ -6,16 +6,18 @@ import java.util.ArrayList;
 import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
 public class GlobalMethods extends Application
 {
-	private MapFragment mapFragment ;
+	private MapFragment 	mapFragment ;
 	private BaseDeDonnees	myBaseDeDonnee;
-	private ArrayList<Map> mapOrigineList ;
 	
-	
+	private ArrayList<Map> 	mapOriginList ;
+	private Map				currentMap;
+	private ArrayList<City> cityMapList = null;
 	
 
 	@Override
@@ -33,7 +35,7 @@ public class GlobalMethods extends Application
 			throw new Error ("Unable to create database");
 		}	
 		
-		fillMapOrigineList();
+		fillMapOriginList();
 	}
 
 	public BaseDeDonnees getMyBaseDeDonnee ()
@@ -59,37 +61,53 @@ public class GlobalMethods extends Application
 		return size;
 	}
 	
-	public ArrayList<Map> getMapOrigineList() {
-		return mapOrigineList;
-	}
-
-	public void setMapOrigineList(ArrayList<Map> mapOrigineList) {
-		this.mapOrigineList = mapOrigineList;
-	}
-	
-	public void fillMapOrigineList() {
-		  mapOrigineList = new ArrayList<Map>();
-		  myBaseDeDonnee.openDataBase();
-		    
-		  Cursor cursor = myBaseDeDonnee.getMapOrigine();
-		    int nbMap = cursor.getCount();
-		    if (nbMap != 0) {
-		     for (int i = 0; i < nbMap; i ++ ) {
-		      cursor.moveToPosition (i);
-		      Map map = new Map(cursor);
-		      mapOrigineList.add(map); 
-		     }
-		    } 
-		    cursor.close ();
-		    myBaseDeDonnee.close();
-		 }
-	
-	
 	public MapFragment getMapFragment() {
 		return mapFragment;
 	}
 
 	public void setMapFragment(MapFragment mapFragment) {
 		this.mapFragment = mapFragment;
+	}
+	
+	public ArrayList<Map> getMapOriginList() {
+		return mapOriginList;
+	}
+
+	public void setMapOriginList(ArrayList<Map> mapOrigineList) {
+		this.mapOriginList = mapOrigineList;
+	}
+	
+	public void fillMapOriginList() {
+		mapOriginList = new ArrayList<Map>();
+		myBaseDeDonnee.openDataBase();
+		    
+		Cursor cursor = myBaseDeDonnee.getMapOrigin();
+		int nbMap = cursor.getCount();
+		if (nbMap != 0) {
+			for (int i = 0; i < nbMap; i ++ ) {
+				cursor.moveToPosition (i);
+				Map map = new Map(cursor);
+				mapOriginList.add(map); 
+			}
+		} 
+		cursor.close();
+		myBaseDeDonnee.close();
+	}
+
+	public Map getCurrentMap() {
+		return currentMap;
+	}
+
+	public void setCurrentMap(Map currentMap) {
+		this.currentMap = currentMap;
+	}
+
+	public ArrayList<City> getCityMapList() {
+		return cityMapList;
+	}
+
+	public void setCityMapList() {
+		this.cityMapList = myBaseDeDonnee.getCity(currentMap.getId());
+		Log.v("city", "nb villes : " + this.cityMapList.size());
 	}
 }

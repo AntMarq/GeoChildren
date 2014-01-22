@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -27,10 +28,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 	private String src;
 	private SQLiteDatabase		myDataBase;
 	private final Context		myContext;
-	
-	
-	
-	
+
 	public BaseDeDonnees (Context context)
 	{
 		super (context, DB_NAME, null, 1);
@@ -67,7 +65,6 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 
 			try
 			{
-				
 				copyDataBase ();	
 				Log.v (tag, "BDD copi�");
 			}
@@ -139,7 +136,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 
 	/* MAP_ORIGINE */
 
-	public void insertMapOrigine (Map map_origine) 
+	public void insertMapOrigin (Map map_origine) 
 	{
 		ContentValues cvMapOrigine = new ContentValues ();
 		cvMapOrigine.put ("_id", map_origine.getId ());
@@ -165,7 +162,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 			openDataBase ();
 		}
 		
-		if(checkMapOrigine(map_origine.getId ())) {
+		if(checkMapOrigin(map_origine.getId ())) {
 			try {
 				myDataBase.insert ("MAP_ORIGINE", null, cvMapOrigine);
 			} catch (SQLiteException e) {
@@ -175,7 +172,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 		myDataBase.close ();
 	}
 
-	public void deleteMapOrigine (long id ) {
+	public void deleteMapOrigin (long id ) {
 		if ( ! myDataBase.isOpen ()) {
 			openDataBase ();
 		}
@@ -188,7 +185,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 		myDataBase.close ();
 	}
 
-	private boolean checkMapOrigine(int id) {
+	private boolean checkMapOrigin(int id) {
 		Cursor retour = myDataBase.query ("MAP_ORIGINE", null, "_id="+id, null, null, null, null);
 		if(retour.getCount ()!=0) {
 			retour.close();
@@ -198,7 +195,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 		return true;
 	}
 
-	public Cursor getMapOrigine () {
+	public Cursor getMapOrigin () {
 		String[] columns = new String [] {"_id", "id_type", "title", "picture"};
 		Cursor cursorMapOrigine = myDataBase.query ("MAP_ORIGINE", columns, null, null, null, null, null, null);
 		return cursorMapOrigine;
@@ -322,8 +319,29 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 	
 	/* CITY */
 	
-	
-	
+	public ArrayList<City> getCity(int id_map) {
+		ArrayList<City> cityNamesList = new ArrayList<City>();
+		String[] columns = new String [] {"name"};
+		
+		if ( ! myDataBase.isOpen()) {
+			openDataBase();
+		}
+
+		Cursor cursorCity = myDataBase.query ("CITY", columns, "id_map="+ id_map, null, null, null, null, null);
+		
+		int nbCity = cursorCity.getCount();
+		if (nbCity != 0) {
+			for (int i=0 ; i < nbCity ; i++) {
+				cursorCity.moveToPosition(i);
+				cityNamesList.add(new City(cursorCity));
+			}
+		} 
+		
+		cursorCity.close();
+		myDataBase.close ();
+		
+		return cityNamesList;
+	}
 }
 
 
