@@ -26,9 +26,10 @@ public class ZoomablePinView extends ImageView{
 	private float 		    	posXInPixels=0, posYInPixels=0;
 	private float 		 	    width=0, height=0;
 	private static final Random rgenerator = new Random();
-	Paint paint;
-	Paint paintRect = new Paint();
-	Bitmap bitmap;
+	private String 				text;
+	Paint 						paint;
+	Paint 						paintRect = new Paint();
+	Bitmap 						bitmap;
 
 	
 	public ZoomablePinView(Context context) 
@@ -36,33 +37,29 @@ public class ZoomablePinView extends ImageView{
 		super(context);
 
 		//setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.map_marker_32dp));
-		String text = randomText(context);
-	 
-	 
-
+		this.text = randomText(context);
+		
 		Resources resources = context.getResources();
         float scale = resources.getDisplayMetrics().density;
 		
-
-		 Rect bounds = new Rect();
-		 paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		 paint.setColor(resources.getColor(R.color.blue));
-		 paint.setTextSize((int) (18 * scale));
-         paint.getTextBounds(text, 0 , text.length(), bounds);
+        Rect bounds = new Rect();
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(resources.getColor(R.color.blue));
+        paint.setTextSize((int) (18 * scale));
+        paint.getTextBounds(text, 0 , text.length(), bounds);
      
-		 
 		 //draw Rectangle		
-		 Bitmap bm = Bitmap.createBitmap((bounds.width()+12),  (bounds.height()+10), Config.ARGB_8888);
-		
-		 Canvas canvas = new Canvas(bm);
-		 canvas.drawARGB(150, 245, 245, 245);
-		
-		 
-		 int x = (bm.getWidth() - bounds.width())/3;
-         int y = (bm.getHeight() + bounds.height())/3;
-         Log.v("ZoomablePinView", "bm = " + x + " / " + y);
-		 canvas.drawText(text,x*scale, y*scale, paint);
-         setImageBitmap(bm);
+        Bitmap bm = Bitmap.createBitmap((bounds.width()+12),  (bounds.height()+10), Config.ARGB_8888);
+	
+        Canvas canvas = new Canvas(bm);
+        canvas.drawARGB(150, 245, 245, 245);
+	
+	 
+        int x = (bm.getWidth() - bounds.width())/3;
+        int y = (bm.getHeight() + bounds.height())/3;
+        Log.v("ZoomablePinView", "bm = " + x + " / " + y);
+        canvas.drawText(text,x*scale, y*scale, paint);
+        setImageBitmap(bm);
 	}
 
 
@@ -126,6 +123,10 @@ public class ZoomablePinView extends ImageView{
 		return posY - height/2;
 	}
 	
+	public String getText() {
+		return text;
+	}
+
 	public String randomText (Context context)
 	{
 		application = (GlobalMethods) context.getApplicationContext();		

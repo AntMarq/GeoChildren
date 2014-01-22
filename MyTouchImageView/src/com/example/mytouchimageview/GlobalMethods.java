@@ -135,6 +135,14 @@ public class GlobalMethods extends Application
 
 	public void setCityMapList() {
 		this.cityMapList = myBaseDeDonnee.getCity(currentMap.getId());
-		Log.v("city", "nb villes : " + this.cityMapList.size());
+	}
+	
+	public void setCityVisibilityToFalse(String cityName) {
+		Log.v("city", "pin : " + cityName);
+
+		for (City city : this.cityMapList) {
+			if(city.getName().equals(cityName))
+				city.setDisplayed(false);
+		}
 	}
 }

@@ -328,6 +328,9 @@ public class TouchImageView extends ImageView {
 	public void removePin()
 	{
 		if (selectedPin > -1){
+			application = (GlobalMethods) context.getApplicationContext();
+			application.setCityVisibilityToFalse(pins.get(selectedPin).getText());
+			
 			ViewGroup parent = (ViewGroup) getParent();
 			parent.removeView(pins.get(selectedPin));
 			pins.remove(selectedPin);
