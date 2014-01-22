@@ -16,24 +16,35 @@ public class ExpandableListGeoAdapter extends BaseExpandableListAdapter {
 	 
     private Context _context;
     private List<String> _listDataHeader; // header titles
+    private HashMap<String, List<String>> _listChildMapSave;
    //categ title
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
     ViewHolder holder = null;
  
     public ExpandableListGeoAdapter(Context context, List<String> listDataHeader,
-            HashMap<String, List<String>> listChildData) 
+            HashMap<String, List<String>> listChildData,HashMap<String, List<String>> listMapSave) 
     {
         this._context = context;
         this._listDataHeader = listDataHeader;
- 
+        this._listChildMapSave = listMapSave;
         this._listDataChild = listChildData;
     }
  
     @Override
-    public Object getChild(int groupPosition, int childPosititon) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .get(childPosititon);
+    public Object getChild(int groupPosition, int childPosititon) 
+    {
+    	if(groupPosition == 0)
+    	{
+    		 return this._listDataChild.get(this._listDataHeader.get(groupPosition))
+    	                .get(childPosititon);
+    	}
+    	else
+    	{
+    		 return this._listChildMapSave.get(this._listDataHeader.get(groupPosition))
+ 	                .get(childPosititon);
+    	}
+       
     }
  
     @Override
@@ -42,8 +53,7 @@ public class ExpandableListGeoAdapter extends BaseExpandableListAdapter {
     }
  
     @Override
-    public View getChildView(int groupPosition, final int childPosition,
-            boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(int groupPosition, final int childPosition,boolean isLastChild, View convertView, ViewGroup parent) {
  
         final String childText = (String) getChild(groupPosition, childPosition);
  
@@ -66,11 +76,12 @@ public class ExpandableListGeoAdapter extends BaseExpandableListAdapter {
     		
     		 return this._listDataChild.get(this._listDataHeader.get(groupPosition)).size();
     	}
-    	else
+    	else if (this._listDataHeader.get(groupPosition).contentEquals("Mes Cartes"))
     	{
-    		
-    		return 0;
+    		return this._listChildMapSave.get(this._listDataHeader.get(groupPosition)).size();
     	}
+		return 0;
+    
        
     }
  

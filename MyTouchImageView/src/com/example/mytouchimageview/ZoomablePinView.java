@@ -6,12 +6,16 @@ import java.util.Random;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -22,15 +26,45 @@ public class ZoomablePinView extends ImageView{
 	private float 		    	posXInPixels=0, posYInPixels=0;
 	private float 		 	    width=0, height=0;
 	private static final Random rgenerator = new Random();
+	Paint paint;
+	Paint paintRect = new Paint();
+	Bitmap bitmap;
+
 	
 	public ZoomablePinView(Context context) 
 	{
 		super(context);
+
 		//setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.map_marker_32dp));
 		String text = randomText(context);
-	 	Bitmap bmp = drawTextToBitmap(context,R.drawable.bubble,text);
-	 	setImageBitmap(bmp);
+	 
+	 
+
+		Resources resources = context.getResources();
+        float scale = resources.getDisplayMetrics().density;
+		
+
+		 Rect bounds = new Rect();
+		 paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		 paint.setColor(resources.getColor(R.color.blue));
+		 paint.setTextSize((int) (18 * scale));
+         paint.getTextBounds(text, 0 , text.length(), bounds);
+     
+		 
+		 //draw Rectangle		
+		 Bitmap bm = Bitmap.createBitmap((bounds.width()+12),  (bounds.height()+10), Config.ARGB_8888);
+		
+		 Canvas canvas = new Canvas(bm);
+		 canvas.drawARGB(150, 245, 245, 245);
+		
+		 
+		 int x = (bm.getWidth() - bounds.width())/3;
+         int y = (bm.getHeight() + bounds.height())/3;
+         Log.v("ZoomablePinView", "bm = " + x + " / " + y);
+		 canvas.drawText(text,x*scale, y*scale, paint);
+         setImageBitmap(bm);
 	}
+
 
 	@Override
 	public void setImageBitmap(Bitmap bm)
@@ -91,49 +125,6 @@ public class ZoomablePinView extends ImageView{
 	public float getCenterPointViewY() {
 		return posY - height/2;
 	}
-	
-	public Bitmap drawTextToBitmap(Context mContext,  int resourceId,  String mText) {
-	    try {
-	         Resources resources = mContext.getResources();
-	            float scale = resources.getDisplayMetrics().density;
-	            Bitmap bitmap = BitmapFactory.decodeResource(resources, resourceId);
-
-	            android.graphics.Bitmap.Config bitmapConfig =   bitmap.getConfig();
-	            // set default bitmap config if none
-	            if(bitmapConfig == null) {
-	              bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
-	            }
-	            // resource bitmaps are imutable,
-	            // so we need to convert it to mutable one
-	            bitmap = bitmap.copy(bitmapConfig, true);
-
-	            Canvas canvas = new Canvas(bitmap);
-	            // new antialised Paint
-	            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-	            // text color - #3D3D3D
-	            paint.setColor(Color.rgb(110,110, 110));
-	            // text size in pixels
-	            paint.setTextSize((int) (16 * scale));
-	            // text shadow
-	            paint.setShadowLayer(1f, 0f, 1f, Color.MAGENTA);
-
-	            // draw text to the Canvas center
-	            Rect bounds = new Rect();
-	            paint.measureText (mText);
-	            paint.getTextBounds(mText, 0 , mText.length(), bounds);
-	            int x = (bitmap.getWidth() - bounds.width())/6;
-	            int y = (bitmap.getHeight() + bounds.height())/5;
-
-	          canvas.drawText(mText, 0, y * scale, paint);
-	           
-	            return bitmap;
-	    } catch (Exception e) {
-	        // TODO: handle exception
-	    	return null;
-	    }
-
-	  }
-	
 	
 	public String randomText (Context context)
 	{

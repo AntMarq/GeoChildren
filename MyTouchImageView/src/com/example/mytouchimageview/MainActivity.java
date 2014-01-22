@@ -7,7 +7,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import android.app.AlertDialog.Builder;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -24,7 +28,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity 
 {
@@ -35,29 +42,32 @@ public class MainActivity extends FragmentActivity
 	private ActionBarDrawerToggle mDrawerToggle;
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
-	List<String> listDataCateg;
+	List<String> listMapTitleSave;
 	List<String> listDataHeader;
+	List<String> listMapTitle;
     HashMap<String, List<String>> listDataChild;
+    HashMap<String, List<String>> listChildMapSave;
     private Fragment fragment;
     private String tagMap = "Map";
     private ExpandableListGeoAdapter mExpandableListGeoAdapter;
     final static String ARG_POSITION = "position";
-    List<String> listMapTitle;
     FragmentManager manager;
     MapFragment frag;
     private Bitmap bitmap;
     FragmentTransaction ft;
     GlobalMethods application;
-    
+    Context mContext = this;
+    Map mp ;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		prepareListData();
+		application = (GlobalMethods) this.getApplicationContext();
+		prepareListDataHeader();
+		prepareListDataChildSave();
 
-		
 		mTitle = mDrawerTitle = getTitle();
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ExpandableListView) findViewById(R.id.left_drawer);
@@ -69,7 +79,7 @@ public class MainActivity extends FragmentActivity
 
 	//	dataDrawer = new ArrayDrawerData(this);
 	//	mDrawerList.setAdapter(new CustomArrayAdapter(this.getBaseContext(), dataDrawer));
-		mExpandableListGeoAdapter = new ExpandableListGeoAdapter(this.getBaseContext(), listDataHeader, listDataChild); 
+		mExpandableListGeoAdapter = new ExpandableListGeoAdapter(this.getBaseContext(), listDataHeader, listDataChild,listChildMapSave); 
 		mDrawerList.setAdapter(mExpandableListGeoAdapter);
 		mDrawerList.setOnGroupClickListener(new DrawerItemClickListener());
 		mDrawerList.setOnChildClickListener(new DrawerItemClickListener());
@@ -174,16 +184,62 @@ public class MainActivity extends FragmentActivity
 					{
 						if(groupPosition == 2)
 						{
-							Log.v(tag, "groupPosition = 2");
-							
 							frag.mImageView.removeAllPin();
-						
-							Log.v(tag, "onGroupClickNoChild" + frag.toString());
 						}
 
 						if(groupPosition == 3)
 						{
-							frag.mImageView.saveScreen();						
+
+							bitmap = frag.mImageView.saveScreen();
+							Log.v(tag, "bitmap " + bitmap);
+							Builder builder = new Builder(mContext);
+					        final EditText input = new EditText(mContext);
+					        builder
+					            .setTitle("Saisissez votre titre")
+					            .setMessage("Confirmer la sauvegarde ? ")
+					            .setView(input)
+					            .setPositiveButton("Ok", new DialogInterface.OnClickListener() 
+					            {
+
+					                public void onClick(DialogInterface dialog, int which) 
+					                {
+					                    String value = input.getText().toString();
+					                    if (input.getText().toString().trim().length() == 0) 
+					                    {
+					                        Toast.makeText(application,"Titre non saisi", Toast.LENGTH_SHORT).show();
+					                    } 
+					                    else 
+					                    {
+					                    	application.getMyBaseDeDonnee ().openDataBase();
+					                    	if(bitmap != null)
+					                		{
+					                    		Log.v(tag, "bitmap not null");
+					                			mp = new Map();
+					                			mp.setTitle(value);
+					                			mp.setId_map(application.getCurrentMap().getId());
+					                			mp.setId_type(2);
+					                			mp.setPicture(bitmap);
+					                			application.getMyBaseDeDonnee().insertMapSave(mp);
+
+					                		}
+					                		
+					                		application.getMyBaseDeDonnee().close();
+					                		application.fillMapSave();
+					                		mExpandableListGeoAdapter.notifyDataSetChanged();
+					                		//getData();
+					                    }
+					                }
+					            })
+					        	.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+					            public void onClick(DialogInterface dialog, int which) {
+					                InputMethodManager imm = (InputMethodManager) application.getSystemService(Context.INPUT_METHOD_SERVICE);
+					                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+					            }
+
+					        });
+
+					        builder.show();
 						}
 					}
 					
@@ -206,7 +262,8 @@ public class MainActivity extends FragmentActivity
 			{
 				Log.v(tag, "childPosition = " + childPosition + "groupPosition " + groupPosition);
 				
-						
+					if(groupPosition == 0 )
+					{
 						manager = getSupportFragmentManager();
 						FragmentTransaction ft = manager.beginTransaction();
 						fragment = new MapFragment();
@@ -218,8 +275,11 @@ public class MainActivity extends FragmentActivity
 						fragment.setArguments(args);
 					
 						ft.replace(R.id.content_frame, fragment, tagMap).commit();
-						
-						Log.v(tag, "onGroupClickNoChild" + fragment.toString());
+					}
+					else if(groupPosition == 1 && mExpandableListGeoAdapter.getChildrenCount(groupPosition) > 0)
+					{
+						//todo mes cartes
+					}
 						
 						mDrawerList.setItemChecked(childPosition, true);
 						String dataString = listMapTitle.get(childPosition).toString();
@@ -240,8 +300,7 @@ public class MainActivity extends FragmentActivity
 	                    if (bitmap != null) {
 	                        bitmap.recycle();
 	                    }
-	                    InputStream stream = getContentResolver().openInputStream(
-	                            data.getData());
+	                    InputStream stream = getContentResolver().openInputStream(data.getData());
 	                    bitmap = BitmapFactory.decodeStream(stream);
 	                    stream.close();
 	                    Log.v(tag, "frag = " + frag);
@@ -257,22 +316,12 @@ public class MainActivity extends FragmentActivity
 	        }
 	    }
 		
-		private void selectItem(int position)
-		{			
-			
-			Log.v(tag, "selectItem" + position);
-			
-		//	mDrawerList.setItemChecked(position, true);
-			//String dataString = listDataHeader.get(position).toString();
-		//	setTitle(dataString);
-		//	mDrawerLayout.closeDrawer(mDrawerList);
-		}
 		
-		private void prepareListData() {
+		private void prepareListDataHeader() {
 
 	        listDataHeader = new ArrayList<String>();
 	        listDataChild = new HashMap<String, List<String>>();
-	        
+	        listChildMapSave = new HashMap<String, List<String>>();
 	 
 	        // Adding child data
 	        listDataHeader.add("Cartes");
@@ -281,12 +330,16 @@ public class MainActivity extends FragmentActivity
 	        listDataHeader.add("Enregistrer");
 	        listDataHeader.add("Importer");	        
 	        listDataHeader.add("Supprimer");
-	 
+
 	        // Adding child data
 	        listMapTitle = new ArrayList<String>();
 	        
 	         application = (GlobalMethods) this.getApplicationContext();
 	         List<Map> listMapOrigine = application.getMapOriginList();
+	        // Adding child data 
+	         listMapTitle = new ArrayList<String>();
+	         
+
 	         
 	         for (Map map : listMapOrigine) 
 	         {
@@ -294,7 +347,19 @@ public class MainActivity extends FragmentActivity
 	         }
 	     
 	        listDataChild.put(listDataHeader.get(0), listMapTitle); // Header, Child data
-
-	    }
+		}
 		
+		private void prepareListDataChildSave()
+		{
+			//Adding child data for saveMap
+	         listMapTitleSave = new ArrayList<String>();
+	         List<Map> listMapSave = application.getMapSaveList();
+	         
+	         for (Map map : listMapSave) 
+	         {
+	        	 listMapTitleSave.add(map.getTitle());
+	         }
+	     
+	         listChildMapSave.put(listDataHeader.get(1), listMapTitleSave);
+		}
 }

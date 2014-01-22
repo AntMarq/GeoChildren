@@ -64,11 +64,14 @@ public class MapFragment extends Fragment
       
        
 		myChildPosition =bundle.getInt("position"); 
-		
+	
+
 		application.setCurrentMap(application.getMapOriginList().get(myChildPosition));
 		application.setCityMapList();
 		
 		mImageView.setImageBitmap(application.getCurrentMap().getPicture());
+
+
 
         return view;
 	

@@ -3,7 +3,9 @@ package com.example.mytouchimageview;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -14,6 +16,8 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -45,7 +49,7 @@ public class TouchImageView extends ImageView {
 
 	GlobalMethods application;
 	ScaleGestureDetector mScaleDetector;
-
+	Bitmap bm;
 	Context context;
 
 	private ArrayList<ZoomablePinView> pins = new ArrayList<ZoomablePinView>();
@@ -289,29 +293,17 @@ public class TouchImageView extends ImageView {
 		selectedPin = pins.size() - 1;
 	}
 
-	public void saveScreen ()
+	public Bitmap saveScreen ()
 	{
 		ViewGroup parent = (ViewGroup) getParent();
 		application = (GlobalMethods) context.getApplicationContext();
 		parent.setDrawingCacheEnabled(true);
 		parent.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-		Bitmap bm = parent.getDrawingCache(true);
+		final Bitmap bm = parent.getDrawingCache(true);
 		Log.v(tag, "application = " + application + "//" + application.getMyBaseDeDonnee ());
-		application.getMyBaseDeDonnee ().openDataBase();
+
+		return bm;
 		
-		
-		if(bm != null)
-		{
-			Map mp = new Map();
-			mp.setTitle("ma carte de test");
-			mp.setId_type(2);
-			mp.setPicture(bm);
-			application.getMyBaseDeDonnee().insertMapSave(mp);
-			
-			
-		}
-		
-		application.getMyBaseDeDonnee().close();
 	
 //Save to Download Folder		
 		/*try {

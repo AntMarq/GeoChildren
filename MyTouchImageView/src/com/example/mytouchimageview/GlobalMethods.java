@@ -17,8 +17,8 @@ public class GlobalMethods extends Application
 	
 	private ArrayList<Map> 	mapOriginList ;
 	private Map				currentMap;
+	private ArrayList<Map> mapSaveList ;
 	private ArrayList<City> cityMapList = null;
-	
 
 	@Override
 	public void onCreate ()
@@ -35,7 +35,10 @@ public class GlobalMethods extends Application
 			throw new Error ("Unable to create database");
 		}	
 		
+
 		fillMapOriginList();
+		fillMapSave();
+
 	}
 
 	public BaseDeDonnees getMyBaseDeDonnee ()
@@ -68,6 +71,14 @@ public class GlobalMethods extends Application
 	public void setMapFragment(MapFragment mapFragment) {
 		this.mapFragment = mapFragment;
 	}
+
+	public ArrayList<Map> getMapSaveList() {
+		return mapSaveList;
+	}
+
+	public void setMapSaveList(ArrayList<Map> mapSaveList) {
+		this.mapSaveList = mapSaveList;
+	}
 	
 	public ArrayList<Map> getMapOriginList() {
 		return mapOriginList;
@@ -76,7 +87,7 @@ public class GlobalMethods extends Application
 	public void setMapOriginList(ArrayList<Map> mapOrigineList) {
 		this.mapOriginList = mapOrigineList;
 	}
-	
+
 	public void fillMapOriginList() {
 		mapOriginList = new ArrayList<Map>();
 		myBaseDeDonnee.openDataBase();
@@ -93,6 +104,22 @@ public class GlobalMethods extends Application
 		cursor.close();
 		myBaseDeDonnee.close();
 	}
+	public void fillMapSave() {
+		  mapSaveList = new ArrayList<Map>();
+		  myBaseDeDonnee.openDataBase();
+		    
+		  Cursor cursor = myBaseDeDonnee.getMapSave();
+		    int nbMap = cursor.getCount();
+		    if (nbMap != 0) {
+		     for (int i = 0; i < nbMap; i ++ ) {
+		      cursor.moveToPosition (i);
+		      Map map = new Map(cursor);
+		      mapSaveList.add(map); 
+		     }
+		    } 
+		    cursor.close ();
+		    myBaseDeDonnee.close();
+		 }
 
 	public Map getCurrentMap() {
 		return currentMap;

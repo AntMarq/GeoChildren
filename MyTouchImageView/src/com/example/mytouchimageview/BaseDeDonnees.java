@@ -66,7 +66,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 			try
 			{
 				copyDataBase ();	
-				Log.v (tag, "BDD copi�");
+				Log.v (tag, "BDD copié");
 			}
 			catch (IOException e)
 			{
@@ -205,16 +205,17 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 
 	public void insertMapSave (Map map_save) 
 	{
-		Log.v (tag, "insertMapSave" + myDataBase);
+		Log.v (tag, "insertMapSave");
 		ContentValues cvMapSave = new ContentValues ();
-		cvMapSave.put ("_id", map_save.getId());
+	//	cvMapSave.put ("_id", map_save.getId());
 		cvMapSave.put ("id_type", map_save.getId_type());
 		cvMapSave.put ("id_map", map_save.getId_map());
 		cvMapSave.put ("title", map_save.getTitle());
 	
 		//convert Bitmap to blob
-		if(map_save.getPicture()!=null) 
+		if(map_save.getPicture()!=null && map_save.getTitle()!= null) 
 		{
+			Log.v (tag, "map_save.getPicture()!=null");
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			map_save.getPicture().compress(Bitmap.CompressFormat.PNG, 100, bos);
 			byte[] bArray = bos.toByteArray();
@@ -230,13 +231,22 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 			openDataBase ();
 		}
 		
-		if(checkMapSave(map_save.getId ())) {
+		if(checkMapSave(map_save.getTitle())) 
+		{
+			Log.v (tag, "checkMapSave");
 			try {
 				myDataBase.insert ("MAP_SAVE", null, cvMapSave);
-				Toast.makeText(myContext, "Carte sauvegard�e", Toast.LENGTH_SHORT).show();;
-			} catch (SQLiteException e) {
+				Log.v (tag, "MAP_SAVE !!!!!");
+				Toast.makeText(myContext, "Carte sauvegardée", Toast.LENGTH_SHORT).show();;
+			} 
+			catch (SQLiteException e) 
+			{
 				throw new Error ("RecentDbManager Exception in inserting data" + e.getMessage ());
 			}
+		}
+		else
+		{
+			updateMapSave(map_save);
 		}
 		myDataBase.close ();
 	}
@@ -262,6 +272,7 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 			openDataBase();
 		}
 		try {
+			Log.v(tag, "UPDATE !!!");
 			myDataBase.update("MAP_SAVE", cvMapSave, "_id="+map_save.getId(), null);
 		} catch (SQLiteException e) {
 			throw new Error ("RecentDbManager Exception in updating data" + e.getMessage ());
@@ -283,9 +294,10 @@ public class BaseDeDonnees extends SQLiteOpenHelper
 		myDataBase.close ();
 	}
 
-	private boolean checkMapSave(int id) {
-		Cursor retour = myDataBase.query ("MAP_SAVE", null, "_id="+id, null, null, null, null);
-		if(retour.getCount ()!=0) {
+	private boolean checkMapSave(String title) {
+		Cursor retour = myDataBase.query ("MAP_SAVE", null, "title='"+title +"'" , null, null, null, null);
+		if(retour.getCount ()!=0) 
+		{
 			retour.close();
 			return false;
 		}
